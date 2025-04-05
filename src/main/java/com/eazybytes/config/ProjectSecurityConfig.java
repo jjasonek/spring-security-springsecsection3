@@ -2,6 +2,7 @@ package com.eazybytes.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -37,9 +39,9 @@ public class ProjectSecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user").password("{noop}12345").authorities("read").build();
+        UserDetails user = User.withUsername("user").password("{noop}EassyBytes@12345").authorities("read").build();
         UserDetails admin = User.withUsername("admin")
-                .password("{bcrypt}$2a$12$gqh4eq8vC5UirpfzWwGWf.BgJ9Ffd0ADUSDqf34qaHCoDeBNEUzZS")
+                .password("{bcrypt}$2a$12$6HmvMNc6LH.9kb3raE5d4emPS/MfENuIMZhw2jVc4bVdXd13021JC")
                 .authorities("admin")
                 .build();
         return new InMemoryUserDetailsManager(user, admin);
@@ -51,5 +53,13 @@ public class ProjectSecurityConfig {
 
         // the constructor approach is also valid, but the factor is more flexible.
         //return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * From Spring Security 6.3
+     */
+    @Bean
+    public CompromisedPasswordChecker compromisedPasswordChecker() {
+        return new HaveIBeenPwnedRestApiPasswordChecker();
     }
 }

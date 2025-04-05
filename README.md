@@ -14,3 +14,11 @@ For now we use '{noop}' for not using any password encoder.
 
 now we have not encoded password for the user
 and encoded one (using BCrypt) for the admin.
+
+
+## Dealing with Compromised Passwords
+after applying the haveIBeenPwnedRestApiPasswordChecker, we get the error message:
+The provided password is compromised, please change your password.
+
+To solve this, we change our passwords.
+Prdel@54321 -> $2a$12$6HmvMNc6LH.9kb3raE5d4emPS/MfENuIMZhw2jVc4bVdXd13021JC
