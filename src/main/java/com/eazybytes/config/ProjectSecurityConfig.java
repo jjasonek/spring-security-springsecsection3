@@ -6,6 +6,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -35,7 +38,18 @@ public class ProjectSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user = User.withUsername("user").password("{noop}12345").authorities("read").build();
-        UserDetails admin = User.withUsername("admin").password("{noop}54321").authorities("admin").build();
+        UserDetails admin = User.withUsername("admin")
+                .password("{bcrypt}$2a$12$gqh4eq8vC5UirpfzWwGWf.BgJ9Ffd0ADUSDqf34qaHCoDeBNEUzZS")
+                .authorities("admin")
+                .build();
         return new InMemoryUserDetailsManager(user, admin);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+        // the constructor approach is also valid, but the factor is more flexible.
+        //return new BCryptPasswordEncoder();
     }
 }
